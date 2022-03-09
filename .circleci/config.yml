@@ -18,7 +18,7 @@ jobs:
     executor: php7-4
     steps:
       - run:
-          name: Install alpine requirements for checkout
+          name: Install alpine requirements for composer
           command: apk add git openssh-client curl patch sqlite php-sqlite3
       - checkout
       - run:
@@ -44,6 +44,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Install alpine requirements for behat
+          command: apk add sqlite php-sqlite3
       - run:
           name: Behat
           command: examples/scripts/create_schema.sh && php examples/scripts/load_fixtures.php && vendor/behat/behat/bin/behat --colors -vvv

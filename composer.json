@@ -12,10 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-
-        "kphoen/rulerz": "dev-master as 1.0.0",
-
+        "php": ">=7.4",
+        "kphoen/rulerz": "^1",
         "doctrine/dbal": "^2.4"
     },
     "require-dev": {
@@ -33,5 +31,11 @@
         "psr-4": {
             "Tests\\RulerZ\\": "tests/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/wizaplace/rulerz"
+        }
+    ]
 }

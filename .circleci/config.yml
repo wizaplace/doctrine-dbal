@@ -1,0 +1,147 @@
+version: '2.1'
+executors:
+  php7-4:
+    docker:
+      - image: php:7.4-alpine
+    working_directory: ~/repo
+#  php8-0:
+#    docker:
+#      - image: php:8.0-alpine
+#    working_directory: ~/repo
+#  php8-1:
+#    docker:
+#      - image: php:8.1-alpine
+#    working_directory: ~/repo
+
+jobs:
+  composer7-4:
+    executor: php7-4
+    steps:
+      - run:
+          name: Install alpine requirements for checkout
+          command: apk add git openssh-client curl patch sqlite php-sqlite3
+      - checkout
+      - run:
+          name: composer
+          command: |
+            if [[ ! -f vendor/autoload.php ]]; then
+                curl https://getcomposer.org/composer-stable.phar --location --silent  --output /usr/bin/composer; \
+                chmod +x /usr/bin/composer; \
+                composer install --no-progress --no-interaction; \
+            fi
+      - save_cache:
+          key: composer-{{ checksum "composer.json" }}-{{ checksum "composer.lock" }}
+          paths:
+            - ./vendor
+      - persist_to_workspace:
+          root: .
+          paths:
+            - vendor
+
+  behat7-4:
+    executor: php7-4
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Behat
+          command: examples/scripts/create_schema.sh && php examples/scripts/load_fixtures.php && vendor/behat/behat/bin/behat --colors -vvv
+
+  phpunit7-4:
+    executor: php7-4
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: PHP Unit
+          command: vendor/bin/phpunit
+
+#  composer8-0:
+#    executor: php8-0
+#    steps:
+#      - run:
+#          name: Install alpine requirements for checkout
+#          command: apk add git openssh-client curl patch
+#      - checkout
+#      - run:
+#          name: composer
+#          command: |
+#            if [[ ! -f vendor/autoload.php ]]; then
+#                curl https://getcomposer.org/composer-stable.phar --location --silent  --output /usr/bin/composer; \
+#                chmod +x /usr/bin/composer; \
+#                composer install --no-progress --no-interaction; \
+#            fi
+#      - save_cache:
+#          key: composer-{{ checksum "composer.json" }}-{{ checksum "composer.lock" }}
+#          paths:
+#            - ./vendor
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - vendor
+#
+#  behat8-0:
+#    executor: php8-0
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: .
+#      - run:
+#          name: Behat
+#          command: vendor/behat/behat/bin/behat --colors -vvv
+#
+#  composer8-1:
+#    executor: php8-1
+#    steps:
+#      - run:
+#          name: Install alpine requirements for checkout
+#          command: apk add git openssh-client curl patch
+#      - checkout
+#      - run:
+#          name: composer
+#          command: |
+#            if [[ ! -f vendor/autoload.php ]]; then
+#                curl https://getcomposer.org/composer-stable.phar --location --silent  --output /usr/bin/composer; \
+#                chmod +x /usr/bin/composer; \
+#                composer install --no-progress --no-interaction; \
+#            fi
+#      - save_cache:
+#          key: composer-{{ checksum "composer.json" }}-{{ checksum "composer.lock" }}
+#          paths:
+#            - ./vendor
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - vendor
+#
+#  behat8-1:
+#    executor: php8-1
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: .
+#      - run:
+#          name: Behat
+#          command: vendor/behat/behat/bin/behat --colors -vvv
+
+workflows:
+  version: '2.1'
+  Code quality:
+    jobs:
+      - composer7-4
+#      - composer8-0
+#      - composer8-1
+      - phpunit7-4:
+          requires:
+            - composer7-4
+      - behat7-4:
+          requires:
+            - composer7-4
+#      - behat8-0:
+#          requires:
+#            - composer8-0
+#      - behat8-1:
+#          requires:
+#            - composer8-1

@@ -12,19 +12,32 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-
-        "kphoen/rulerz": "dev-master as 1.0.0",
-
-        "doctrine/dbal": "^2.4"
+        "php": ">=7.4",
+        "kphoen/rulerz": "^1",
+        "doctrine/dbal": "^2.4",
+        "symplify/vendor-patches": "^9.3"
     },
     "require-dev": {
         "liip/rmt": "^1.2",
-
         "behat/behat": "~3.0",
-
-        "phpunit/phpunit": "^7.1",
-        "kphoen/rusty": "dev-master"
+        "phpunit/phpunit": "^9.5"
+    },
+    "extra": {
+        "patches": {
+            "hoa/compiler": [
+                "patches/hoa-compiler-llk-rule-rule-php.patch"
+            ],
+            "hoa/stream": [
+                "patches/hoa-stream-stream-php.patch"
+            ],
+            "hoa/iterator": [
+                "patches/hoa-iterator-lookahead-php.patch",
+                "patches/hoa-iterator-buffer-php.patch"
+            ],
+            "hoa/protocol": [
+                "patches/hoa-protocol-node-node-php.patch"
+            ]
+        }
     },
     "autoload": {
         "psr-4": { "RulerZ\\DoctrineDBAL\\": "src/" }
@@ -33,5 +46,11 @@
         "psr-4": {
             "Tests\\RulerZ\\": "tests/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/wizaplace/rulerz"
+        }
+    ]
 }

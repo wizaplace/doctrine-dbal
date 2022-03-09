@@ -15,7 +15,7 @@ class FilterTraitTest extends TestCase
     /** @var DBALExecutorStub */
     private $executor;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->executor = new DBALExecutorStub();
     }

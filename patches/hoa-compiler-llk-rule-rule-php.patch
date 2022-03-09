@@ -1,0 +1,11 @@
+--- /dev/null
++++ ../Llk/Rule/Rule.php
+@@ -181,7 +181,7 @@
+     {
+         $old = $this->_nodeId;
+ 
+-        if (false !== $pos = strpos($nodeId, ':')) {
++        if (null !== $nodeId && false !== $pos = strpos($nodeId, ':')) {
+             $this->_nodeId      = substr($nodeId, 0, $pos);
+             $this->_nodeOptions = str_split(substr($nodeId, $pos + 1));
+         } else {

@@ -1,0 +1,137 @@
+--- /dev/null
++++ ../Lookahead.php
+@@ -36,6 +36,52 @@
+ 
+ namespace Hoa\Iterator;
+ 
++if (phpversion() >= 8.1) {
++    class FixedIterator extends IteratorIterator{
++        /**
++         * Return the key of the current element.
++         *
++         * @return  mixed
++         */
++        public function key(): mixed
++        {
++            return $this->_key;
++        }
++
++        /**
++         * Return the current element.
++         *
++         * @return  mixed
++         */
++        public function current():mixed
++        {
++            return $this->_current;
++        }
++    }
++} else {
++    class FixedIterator extends IteratorIterator{
++        /**
++         * Return the key of the current element.
++         *
++         * @return  mixed
++         */
++        public function key()
++        {
++            return $this->_key;
++        }
++
++        /**
++         * Return the current element.
++         *
++         * @return  mixed
++         */
++        public function current()
++        {
++            return $this->_current;
++        }
++    }
++}
++
+ /**
+  * Class \Hoa\Iterator\Lookahead.
+  *
+@@ -44,7 +90,7 @@
+  * @copyright  Copyright © 2007-2017 Hoa community
+  * @license    New BSD License
+  */
+-class Lookahead extends IteratorIterator implements Outer
++class Lookahead extends FixedIterator implements Outer
+ {
+     /**
+      * Current iterator.
+@@ -93,37 +139,17 @@
+      *
+      * @return  \Iterator
+      */
+-    public function getInnerIterator()
++    public function getInnerIterator(): ?\Generator
+     {
+         return $this->_iterator;
+     }
+ 
+     /**
+-     * Return the current element.
+-     *
+-     * @return  mixed
+-     */
+-    public function current()
+-    {
+-        return $this->_current;
+-    }
+-
+-    /**
+-     * Return the key of the current element.
+-     *
+-     * @return  mixed
+-     */
+-    public function key()
+-    {
+-        return $this->_key;
+-    }
+-
+-    /**
+      * Move forward to next element.
+      *
+      * @return  void
+      */
+-    public function next()
++    public function next(): void
+     {
+         $innerIterator = $this->getInnerIterator();
+         $this->_valid  = $innerIterator->valid();
+@@ -135,7 +161,7 @@
+         $this->_key     = $innerIterator->key();
+         $this->_current = $innerIterator->current();
+ 
+-        return $innerIterator->next();
++        $innerIterator->next();
+     }
+ 
+     /**
+@@ -143,12 +169,10 @@
+      *
+      * @return  void
+      */
+-    public function rewind()
++    public function rewind(): void
+     {
+-        $out = $this->getInnerIterator()->rewind();
++        $this->getInnerIterator()->rewind();
+         $this->next();
+-
+-        return $out;
+     }
+ 
+     /**
+@@ -156,7 +180,7 @@
+      *
+      * @return  bool
+      */
+-    public function valid()
++    public function valid(): bool
+     {
+         return $this->_valid;
+     }

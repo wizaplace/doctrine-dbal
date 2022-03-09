@@ -1,0 +1,168 @@
+--- /dev/null
++++ ../Buffer.php
+@@ -36,6 +36,80 @@
+ 
+ namespace Hoa\Iterator;
+ 
++if (phpversion() >= 8.1) {
++    class FixedBuffer extends IteratorIterator{
++        /**
++         * Buffer key index.
++         *
++         * @const int
++         */
++        const BUFFER_KEY   = 0;
++
++        /**
++         * Buffer value index.
++         *
++         * @const int
++         */
++        const BUFFER_VALUE = 1;
++
++        /**
++         * Return the current element.
++         *
++         * @return  mixed
++         */
++        public function current(): mixed
++        {
++            return $this->getBuffer()->current()[self::BUFFER_VALUE];
++        }
++
++        /**
++         * Return the key of the current element.
++         *
++         * @return  mixed
++         */
++        public function key(): mixed
++        {
++            return $this->getBuffer()->current()[self::BUFFER_KEY];
++        }
++    }
++} else {
++    class FixedBuffer extends IteratorIterator{
++        /**
++         * Buffer key index.
++         *
++         * @const int
++         */
++        const BUFFER_KEY   = 0;
++
++        /**
++         * Buffer value index.
++         *
++         * @const int
++         */
++        const BUFFER_VALUE = 1;
++
++        /**
++         * Return the current element.
++         *
++         * @return  mixed
++         */
++        public function current()
++        {
++            return $this->getBuffer()->current()[self::BUFFER_VALUE];
++        }
++
++        /**
++         * Return the key of the current element.
++         *
++         * @return  mixed
++         */
++        public function key()
++        {
++            return $this->getBuffer()->current()[self::BUFFER_KEY];
++        }
++    }
++}
++
+ /**
+  * Class \Hoa\Iterator\Buffer.
+  *
+@@ -44,23 +118,9 @@
+  * @copyright  Copyright © 2007-2017 Hoa community
+  * @license    New BSD License
+  */
+-class Buffer extends IteratorIterator implements Outer
++class Buffer extends FixedBuffer implements Outer
+ {
+     /**
+-     * Buffer key index.
+-     *
+-     * @const int
+-     */
+-    const BUFFER_KEY   = 0;
+-
+-    /**
+-     * Buffer value index.
+-     *
+-     * @const int
+-     */
+-    const BUFFER_VALUE = 1;
+-
+-    /**
+      * Current iterator.
+      *
+      * @var \Iterator
+@@ -103,7 +163,7 @@
+      *
+      * @return  \Iterator
+      */
+-    public function getInnerIterator()
++    public function getInnerIterator(): ?\Generator
+     {
+         return $this->_iterator;
+     }
+@@ -129,31 +189,11 @@
+     }
+ 
+     /**
+-     * Return the current element.
+-     *
+-     * @return  mixed
+-     */
+-    public function current()
+-    {
+-        return $this->getBuffer()->current()[self::BUFFER_VALUE];
+-    }
+-
+-    /**
+-     * Return the key of the current element.
+-     *
+-     * @return  mixed
+-     */
+-    public function key()
+-    {
+-        return $this->getBuffer()->current()[self::BUFFER_KEY];
+-    }
+-
+-    /**
+      * Move forward to next element.
+      *
+      * @return  void
+      */
+-    public function next()
++    public function next(): void
+     {
+         $innerIterator = $this->getInnerIterator();
+         $buffer        = $this->getBuffer();
+@@ -204,7 +244,7 @@
+      *
+      * @return  void
+      */
+-    public function rewind()
++    public function rewind(): void
+     {
+         $innerIterator = $this->getInnerIterator();
+         $buffer        = $this->getBuffer();
+@@ -228,7 +268,7 @@
+      *
+      * @return  bool
+      */
+-    public function valid()
++    public function valid(): bool
+     {
+         return
+             $this->getBuffer()->valid() &&

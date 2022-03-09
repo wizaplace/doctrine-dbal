@@ -1,0 +1,47 @@
+--- /dev/null
++++ ../Node/Node.php
+@@ -108,7 +108,7 @@
+      * @return  \Hoa\Protocol\Protocol
+      * @throws  \Hoa\Protocol\Exception
+      */
+-    public function offsetSet($name, $node)
++    public function offsetSet($name, $node): void
+     {
+         if (!($node instanceof self)) {
+             throw new Protocol\Exception(
+@@ -141,7 +141,7 @@
+      * @return  \Hoa\Protocol\Protocol
+      * @throws  \Hoa\Protocol\Exception
+      */
+-    public function offsetGet($name)
++    public function offsetGet($name): \Hoa\Protocol\Node\Library
+     {
+         if (!isset($this[$name])) {
+             throw new Protocol\Exception(
+@@ -160,7 +160,7 @@
+      * @param   string  $name    Node's name.
+      * @return  bool
+      */
+-    public function offsetExists($name)
++    public function offsetExists($name): bool
+     {
+         return true === array_key_exists($name, $this->_children);
+     }
+@@ -171,7 +171,7 @@
+      * @param   string  $name    Node's name to remove.
+      * @return  void
+      */
+-    public function offsetUnset($name)
++    public function offsetUnset($name): void
+     {
+         unset($this->_children[$name]);
+ 
+@@ -365,7 +365,7 @@
+      *
+      * @return  \ArrayIterator
+      */
+-    public function getIterator()
++    public function getIterator(): \Traversable
+     {
+         return new \ArrayIterator($this->_children);
+     }

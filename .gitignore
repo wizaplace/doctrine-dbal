@@ -2,4 +2,4 @@
 /composer.lock
 /examples/rulerz.db
 .idea
-
+.phpunit.result.cache

@@ -96,7 +96,7 @@ jobs:
           command: apk add sqlite php-sqlite3
       - run:
           name: Behat
-          command: vendor/behat/behat/bin/behat --colors -vvv
+          command: examples/scripts/create_schema.sh && php examples/scripts/load_fixtures.php && vendor/behat/behat/bin/behat --colors -vvv
 
   phpunit8-0:
     executor: php8-0

@@ -18,11 +18,8 @@
     },
     "require-dev": {
         "liip/rmt": "^1.2",
-
         "behat/behat": "~3.0",
-
-        "phpunit/phpunit": "^7.1",
-        "kphoen/rusty": "dev-master"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": { "RulerZ\\DoctrineDBAL\\": "src/" }

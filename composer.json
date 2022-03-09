@@ -14,7 +14,8 @@
     "require": {
         "php": ">=7.4",
         "kphoen/rulerz": "^1",
-        "doctrine/dbal": "^2.4"
+        "doctrine/dbal": "^2.4",
+        "symplify/vendor-patches": "^9.3"
     },
     "require-dev": {
         "liip/rmt": "^1.2",
